@@ -44,8 +44,8 @@ for i,shot in shots.iterrows():
     goal=shot['shot_outcome_name']=='Goal'
     team_name=shot['team_name']
     
-    circleSize=2
-    #circleSize=np.sqrt(shot['shot_statsbomb_xg']*15)
+    #circleSize=2
+    circleSize=np.sqrt(shot['shot_statsbomb_xg']*15)
 
     if (team_name==home_team_required):
         if goal:
@@ -68,7 +68,7 @@ plt.text(5,75,away_team_required + ' shots')
 plt.text(80,75,home_team_required + ' shots') 
      
 fig.set_size_inches(10, 7)
-fig.savefig('Output/shots.pdf', dpi=100) 
+fig.savefig('shotsxprobs.pdf', dpi=100)
 plt.show()
 
 #Exercise: 
@@ -77,3 +77,21 @@ plt.show()
 #3, Plot only passes made by Caroline Seger (she is Sara Caroline Seger in the database)
 #4, Plot arrows to show where the passes we
 
+passes = df.loc[df['type_name'] == 'Pass'].set_index('id')
+
+(fig, ax) = createPitch(pitchLengthX,pitchWidthY,'yards','gray')
+
+for i, thepass in passes.iterrows():
+    if thepass['player_name'] == 'Sara Caroline Seger' :
+        x = thepass['location'][0]
+        y = thepass['location'][1]
+        passCircle = plt.Circle((x,pitchWidthY-y),2,color='blue')
+        passCircle.set_alpha(.2)
+        ax.add_patch(passCircle)
+        dx = thepass['pass_end_location'][0]-x
+        dy = thepass['pass_end_location'][1]-y
+        passArrow = plt.arrow(x,pitchWidthY-y,dx,dy,width =0.5, color='blue')
+        ax.add_patch(passArrow)
+
+fig.set_size_inches(10,7)
+plt.show()
